@@ -42,3 +42,10 @@ If a dog has a sub breed;
 # Bonus
 - Testing
 - Typescript
+
+# Objects
+DogBreed {  
+    name: string,  
+    images: string/blob/check api returns,  
+    subBreed: DogBreed / null  
+}
