@@ -1,5 +1,7 @@
-﻿export interface IBreed {
+﻿import {IImage} from "./IImage";
+
+export interface IBreed {
     name: string,
-    images: string[] | Blob[],
+    images: IImage[],
     subBreed?: IBreed
 }
