@@ -1,7 +1,8 @@
 ﻿import {IImage} from "../../Core/Interfaces/IImage";
-import {QueryFunctionContext, useQuery} from "react-query";
+import {QueryFunctionContext, useQueries, useQuery} from "react-query";
 import axios from "axios";
 import {IBreed} from "../../Core/Interfaces/IBreed";
+import {IApiResponse} from "../../Core/Interfaces/IApiResponse";
 
 const DogApi = () => {
     const sourceUrl = "https://dog.ceo/api/";
@@ -16,8 +17,29 @@ const DogApi = () => {
     const getAllBreeds = async ({
         queryKey: [],
     }: QueryFunctionContext<ReturnType<typeof DogApiKeys['listBreeds']>>) => {
-        const response = await axios.get(`${sourceUrl}breeds/list/all`);
-        return response.data;
+        const response = await axios.get<IApiResponse<{[key:string]:string[]}>>(`${sourceUrl}breeds/list/all`);
+        return response.data.message;
+    }
+    
+    const getRandomImage = async ({
+        queryKey: [],
+    }: QueryFunctionContext<ReturnType<typeof DogApiKeys['image']>>) => {
+        const response = await axios.get<IApiResponse<string>>(`${sourceUrl}breeds/image/random`);
+        return response.data.message;
+    }
+    
+    const getImagesByBreed = async ({
+        queryKey: [{ breed }]
+    }: QueryFunctionContext<ReturnType<typeof DogApiKeys['imagesByBreed']>>) => {
+        const response = await axios.get<IApiResponse<string[]>>(`${sourceUrl}breed/${breed}/images`);
+        return response.data.message;
+    }
+    
+    const getSubBreeds = async ({
+        queryKey: [{ breed }]
+    }: QueryFunctionContext<ReturnType<typeof DogApiKeys['listSubBreeds']>>) => {
+        const response = await axios.get<IApiResponse<string[]>>(`${sourceUrl}breed/${breed}/list`);
+        return response.data.message;
     }
     
     const AllBreeds = () => useQuery(
@@ -38,30 +60,67 @@ const DogApi = () => {
             });
     
     
-    const RandomImage = () => {
-        const image:IImage = {
-            url: ""
+    const RandomImage = () => useQuery(
+        DogApiKeys.image(),
+        getRandomImage,
+        {
+            select: data => {
+                const image:IImage = {
+                    url: data
+                }
+                return image;
+            } 
         }
-        return image;
-    }
+    )
     
     const RandomImages = (amount: number) => {
-        const image:IImage = {
-            url: ""
+        const keys:number[] = [];
+        for (let i = 0; i < amount; i++) {
+            keys.push(i);
         }
-        return [image];
+        return useQueries(
+            keys.map((k) => {
+                return {
+                    queryKey: DogApiKeys.image(),
+                    queryFn: getRandomImage,
+                    select: (data: string) => {
+                        const image: IImage = {url: data}
+                        return image;
+                    }
+                }
+            })
+        );
     }
     
-    const ImagesByBreed = (breed: string) => {
-        const image:IImage = {
-            url: ""
+    const ImagesByBreed = (breed: string) => useQuery(
+        DogApiKeys.imagesByBreed(breed),
+        getImagesByBreed,
+        {
+            select: data => {
+                return data.map(i => {
+                    const image:IImage = {
+                        url: i
+                    }
+                    return image;
+                })
+            }
         }
-        return [image];
-    }
+    )
     
-    const SubBreeds = (breed: string) => {
-        return [];
-    }
+    const SubBreeds = (breed: string) => useQuery(
+        DogApiKeys.listSubBreeds(breed),
+        getSubBreeds,
+        {
+            select: data => {
+                return data.map(i => {
+                    const breed: IBreed = {
+                        name: i
+                    }
+                    return breed;
+                })
+            }
+        }
+    )
     
     return {
         AllBreeds,
