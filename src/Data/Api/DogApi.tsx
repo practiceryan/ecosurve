@@ -2,6 +2,14 @@
 import {IImage} from "../../Core/Interfaces/IImage";
 
 const DogApi = ():IDogApi => {
+    const DogApiKeys = {
+        all: [{ scope: 'dogApi' }] as const,
+        listBreeds: () => [...DogApiKeys.all, 'listBreeds'] as const,
+        listSubBreeds: (breed: string) => [...DogApiKeys.listBreeds(), {breed}] as const,
+        image: () => [...DogApiKeys.all, 'image'] as const,
+        imagesByBreed: (breed: string) => [...DogApiKeys.image(), {breed}] as const,
+    }
+    
     const AllBreeds = () => {
         return [];
     }
