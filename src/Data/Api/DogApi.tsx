@@ -11,6 +11,7 @@ const DogApi = () => {
         listBreeds: () => [{...DogApiKeys.all[0], entity: 'listBreeds'}] as const,
         listSubBreeds: (breed: string) => [{...DogApiKeys.listBreeds(), breed}] as const,
         image: () => [{...DogApiKeys.all, entity: 'image'}] as const,
+        images: (amount: number) => [{...DogApiKeys.image(), amount}] as const,
         imagesByBreed: (breed: string) => [{...DogApiKeys.image(), breed}] as const,
     }
     
@@ -25,6 +26,13 @@ const DogApi = () => {
         queryKey: [],
     }: QueryFunctionContext<ReturnType<typeof DogApiKeys['image']>>) => {
         const response = await axios.get<IApiResponse<string>>(`${sourceUrl}breeds/image/random`);
+        return response.data.message;
+    }
+    
+    const getRandomImages = async ({
+        queryKey: [{ amount }]
+    }: QueryFunctionContext<ReturnType<typeof DogApiKeys['images']>>) => {
+        const response = await axios.get<IApiResponse<string[]>>(`${sourceUrl}breeds/image/random/${amount}`);
         return response.data.message;
     }
     
@@ -74,22 +82,21 @@ const DogApi = () => {
     )
     
     const RandomImages = (amount: number) => {
-        const keys:number[] = [];
-        for (let i = 0; i < amount; i++) {
-            keys.push(i);
-        }
-        return useQueries(
-            keys.map((k) => {
-                return {
-                    queryKey: DogApiKeys.image(),
-                    queryFn: getRandomImage,
-                    select: (data: string) => {
-                        const image: IImage = {url: data}
+        if (amount > 50) return Error; // TODO
+        return useQuery(
+            DogApiKeys.images(amount),
+            getRandomImages,
+            {
+                select: data => {
+                    return data.map(i => {
+                        const image: IImage = {
+                            url: i
+                        }
                         return image;
-                    }
+                    })
                 }
-            })
-        );
+            }
+        )
     }
     
     const ImagesByBreed = (breed: string) => useQuery(
