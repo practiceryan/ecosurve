@@ -2,6 +2,7 @@
 import {IImage} from "../../Core/Interfaces/IImage";
 
 const DogApi = ():IDogApi => {
+    const sourceUrl = "https://dog.ceo/api/";
     const DogApiKeys = {
         all: [{ scope: 'dogApi' }] as const,
         listBreeds: () => [...DogApiKeys.all, 'listBreeds'] as const,
