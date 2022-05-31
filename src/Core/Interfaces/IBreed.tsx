@@ -2,6 +2,6 @@
 
 export interface IBreed {
     name: string,
-    images: IImage[],
-    subBreed?: IBreed
+    images?: IImage[],
+    subBreeds?: IBreed[]
 }
