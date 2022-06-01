@@ -1,19 +1,16 @@
-﻿import {Loader, Select} from "@mantine/core";
-import DogApi from "../../Data/Api/DogApi";
+﻿import {Select} from "@mantine/core";
+import {IBreed} from "../../Core/Interfaces/IBreed";
 
-const SelectBreed = () => {
-    const {AllBreeds} = DogApi();
-    const query = AllBreeds();
-    
-    if (query.isLoading) {
-        return <Loader />
-    }
-    
+const SelectBreed = ({breeds, onChange, label}:{breeds: IBreed[], onChange: (breed:IBreed) => void, label: string}) => {
     return (
         <Select
-            label={"Breed"}
+            label={label}
             placeholder={"Select"}
-            data={query.data!.map((breed) =>
+            onChange={(value) => {
+                const foundBreed = breeds.find((b) => b.name === value);
+                if(foundBreed) onChange(foundBreed);
+            }}
+            data={breeds.map((breed) =>
             {
                 return {
                     value: breed.name,
