@@ -1,4 +1,4 @@
-﻿import {Select} from "@mantine/core";
+import {Select} from "@mantine/core";
 import {IBreed} from "../../Core/Interfaces/IBreed";
 
 const SelectBreed = ({breeds, onChange, label}:{breeds: IBreed[], onChange: (breed:IBreed) => void, label: string}) => {
