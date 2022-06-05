@@ -1,11 +1,9 @@
 ﻿import {IImage} from "../../Core/Interfaces/IImage";
-import {QueryFunctionContext, useQueries, useQuery, useQueryClient} from "react-query";
+import {QueryFunctionContext, useQuery} from "react-query";
 import axios from "axios";
-import {IBreed} from "../../Core/Interfaces/IBreed";
 import {IApiResponse} from "../../Core/Interfaces/IApiResponse";
 
 const DogApi = () => {
-    const queryClient = useQueryClient();
     const sourceUrl = "https://dog.ceo/api/";
     const DogApiKeys = {
         all: [{ scope: 'dogApi' }] as const,
@@ -50,24 +48,7 @@ const DogApi = () => {
         const response = await axios.get<IApiResponse<string[]>>(`${sourceUrl}breed/${breed}/list`);
         return response.data.message;
     }
-    //TODO https://dog.ceo/dog-api/documentation/breed
-    const AllBreeds = () => useQuery(
-            DogApiKeys.listBreeds(),
-            getAllBreeds,
-            {
-                select: data => Object.keys(data).map((key: string) => {
-                    const breed:IBreed = {
-                        name: key,
-                        subBreeds: data[key].map((breedName:string ):IBreed => {
-                            return {
-                                name: breedName
-                            };
-                        })
-                    }
-                    return breed;
-                })
-            });
-    
+    //TODO https://dog.ceo/dog-api/documentation/breed    
     
     const RandomImage = () => useQuery(
         DogApiKeys.image(),
@@ -113,28 +94,16 @@ const DogApi = () => {
         }
     )
     
-    const SubBreeds = (breed: string) => useQuery(
-        DogApiKeys.listSubBreeds(breed),
-        getSubBreeds,
-        {
-            select: data => {
-                return data.map(i => {
-                    const breed: IBreed = {
-                        name: i
-                    }
-                    return breed;
-                })
-            },
-            enabled: breed.length > 0
-        }
-    )
-    
     return {
-        AllBreeds,
         RandomImage,
         RandomImages,
         ImagesByBreed,
-        SubBreeds
+        getAllBreeds,
+        getRandomImage,
+        getRandomImages,
+        getImagesByBreed,
+        getSubBreeds,
+        DogApiKeys
     }
 };
 
