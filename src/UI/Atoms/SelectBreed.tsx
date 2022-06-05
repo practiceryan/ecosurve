@@ -12,7 +12,6 @@ const SelectBreed = (
             placeholder={"Select"}
             onChange={(value) => {
                 const foundBreed = breeds.find((b) => b.name === value);
-                console.log(value)
                 if(foundBreed) onChange(foundBreed);
             }}
             searchable

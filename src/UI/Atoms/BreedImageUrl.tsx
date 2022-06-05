@@ -4,6 +4,7 @@ const BreedImageUrl= ({url}:{url: string}) => (
     <>
         <Image
             src={url}
+            withPlaceholder
         />
     </>
 )
