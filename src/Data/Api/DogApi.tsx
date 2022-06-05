@@ -125,7 +125,8 @@ const DogApi = () => {
                     }
                     return breed;
                 })
-            }
+            },
+            enabled: breed.length > 0
         }
     )
     
