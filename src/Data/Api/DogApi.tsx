@@ -1,10 +1,11 @@
 ﻿import {IImage} from "../../Core/Interfaces/IImage";
-import {QueryFunctionContext, useQueries, useQuery} from "react-query";
+import {QueryFunctionContext, useQueries, useQuery, useQueryClient} from "react-query";
 import axios from "axios";
 import {IBreed} from "../../Core/Interfaces/IBreed";
 import {IApiResponse} from "../../Core/Interfaces/IApiResponse";
 
 const DogApi = () => {
+    const queryClient = useQueryClient();
     const sourceUrl = "https://dog.ceo/api/";
     const DogApiKeys = {
         all: [{ scope: 'dogApi' }] as const,
@@ -81,23 +82,21 @@ const DogApi = () => {
         }
     )
     
-    const RandomImages = (amount: number) => {
-        if (amount > 50) return Error; // TODO
-        return useQuery(
-            DogApiKeys.images(amount),
-            getRandomImages,
-            {
-                select: data => {
-                    return data.map(i => {
-                        const image: IImage = {
-                            url: i
-                        }
-                        return image;
-                    })
-                }
-            }
-        )
-    }
+    const RandomImages = (amount: number) =>  useQuery(
+        DogApiKeys.images(amount),
+        getRandomImages,
+        {
+            select: data => {
+                return data.map(i => {
+                    const image: IImage = {
+                        url: i
+                    }
+                    return image;
+                })
+            },
+            enabled: amount > 50
+        }
+    )
     
     const ImagesByBreed = (breed: string) => useQuery(
         DogApiKeys.imagesByBreed(breed),
