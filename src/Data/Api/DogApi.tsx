@@ -49,7 +49,7 @@ const DogApi = () => {
         const response = await axios.get<IApiResponse<string[]>>(`${sourceUrl}breed/${breed}/list`);
         return response.data.message;
     }
-    
+    //TODO https://dog.ceo/dog-api/documentation/breed
     const AllBreeds = () => useQuery(
             DogApiKeys.listBreeds(),
             getAllBreeds,
@@ -125,7 +125,8 @@ const DogApi = () => {
                     }
                     return breed;
                 })
-            }
+            },
+            enabled: breed.length > 0
         }
     )
     
