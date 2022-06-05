@@ -9,6 +9,7 @@ const BreedGalleryHooks = () => {
     const [selectedBreed, setSelectedBreed] = useState<IBreed>();
     const [selectedSubBreed, setSubSelectedBreed] = useState<IBreed>();
     const [numberOfImagesToShow, setNumberOfImagesToShow] = useState<number>(0);
+    const [errors, setErrors] = useState<string[]>([]);
     
     const AllBreeds = () => useQuery(
         DogApiKeys.listBreeds(),
@@ -44,6 +45,22 @@ const BreedGalleryHooks = () => {
             placeholderData: []
         }
     );
+
+    const GetImagesValidation = () => {
+        const {refetch: Refetch, data, isLoading} = GetImages();
+        const refetch = () => {
+            const errs = [];
+            if(selectedBreed?.name == "" || selectedBreed == undefined) errs.push("breed");
+            if(selectedSubBreed?.name == "" || selectedSubBreed == undefined) errs.push("subBreed");
+            if(numberOfImagesToShow < 1 && numberOfImagesToShow > 50) errs.push("amountToShow");
+            setErrors(errs);
+            console.log(errs);
+
+            if (errs.length === 0) Refetch();
+        }
+        
+        return {data, isLoading, refetch}
+    }
     
     const GetImages = () => useQuery(
         DogApiKeys.imagesByBreed(selectedBreed?.name || "", selectedSubBreed?.name || null, numberOfImagesToShow),
@@ -61,6 +78,7 @@ const BreedGalleryHooks = () => {
             staleTime: 0,
         }
     );
+        
     
     return {
         selectedBreed,
@@ -71,7 +89,9 @@ const BreedGalleryHooks = () => {
         setNumberOfImagesToShow,
         AllBreeds,
         SubBreeds,
-        GetImages
+        GetImages: GetImagesValidation,
+        errors,
+        setErrors
     }
 }
 

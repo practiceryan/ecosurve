@@ -2,9 +2,9 @@ import {Select, Loader} from "@mantine/core";
 import {IBreed} from "../../Core/Interfaces/IBreed";
 
 const SelectBreed = (
-    {breeds, onChange, label, loading}
+    {breeds, onChange, label, loading, error = false}
         :
-    {breeds: IBreed[], onChange: (breed:IBreed) => void, label: string, loading: boolean}) => {
+    {breeds: IBreed[], onChange: (breed:IBreed) => void, label: string, loading: boolean, error?: boolean}) => {
     if(loading) return <Loader />
     return (
         <Select
@@ -23,6 +23,7 @@ const SelectBreed = (
                     label: breed.name
                 }
             })}
+            error={error}
         />
     )
 }

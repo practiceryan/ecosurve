@@ -2,16 +2,20 @@ import React from 'react';
 import './App.css';
 import BreedImageGalleryPage from "./UI/Pages/BreedImageGalleryPage";
 import {QueryClient, QueryClientProvider} from "react-query";
-import {Container} from "@mantine/core";
+import {Container, MantineProvider} from "@mantine/core";
 
 const queryClient = new QueryClient();
 
 function App() {
     return (
         <QueryClientProvider client={queryClient}>
-            <Container>
-                <BreedImageGalleryPage />
-            </Container>
+            <MantineProvider>
+                <Container
+                    fluid
+                >
+                    <BreedImageGalleryPage />
+                </Container>
+            </MantineProvider>
         </QueryClientProvider>
     );
 }
