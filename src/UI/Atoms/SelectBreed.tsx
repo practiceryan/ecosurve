@@ -1,7 +1,11 @@
-import {Select} from "@mantine/core";
+import {Select, Loader} from "@mantine/core";
 import {IBreed} from "../../Core/Interfaces/IBreed";
 
-const SelectBreed = ({breeds, onChange, label}:{breeds: IBreed[], onChange: (breed:IBreed) => void, label: string}) => {
+const SelectBreed = (
+    {breeds, onChange, label, loading, error = false}
+        :
+    {breeds: IBreed[], onChange: (breed:IBreed) => void, label: string, loading: boolean, error?: boolean}) => {
+    if(loading) return <Loader />
     return (
         <Select
             label={label}
@@ -10,6 +14,8 @@ const SelectBreed = ({breeds, onChange, label}:{breeds: IBreed[], onChange: (bre
                 const foundBreed = breeds.find((b) => b.name === value);
                 if(foundBreed) onChange(foundBreed);
             }}
+            searchable
+            nothingFound="No options"
             data={breeds.map((breed) =>
             {
                 return {
@@ -17,6 +23,7 @@ const SelectBreed = ({breeds, onChange, label}:{breeds: IBreed[], onChange: (bre
                     label: breed.name
                 }
             })}
+            error={error}
         />
     )
 }

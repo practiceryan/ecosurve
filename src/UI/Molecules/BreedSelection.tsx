@@ -1,37 +1,36 @@
-﻿import DogApi from "../../Data/Api/DogApi";
-import {useState} from "react";
-import {IBreed} from "../../Core/Interfaces/IBreed";
-import SelectBreed from "../Atoms/SelectBreed";
-import { Loader } from "@mantine/core";
+﻿import SelectBreed from "../Atoms/SelectBreed";
+import BreedGalleryHooks from "../Hooks/BreedGalleryHooks";
+import {ALL} from "dns";
+import {Container, Group} from "@mantine/core";
 
 const BreedSelection = () => {
-    const { AllBreeds, SubBreeds } = DogApi();
-    const [selectedBreed, setSelectedBreed] = useState<IBreed>();
-    const [selectedSubBreed, setSubSelectedBreed] = useState<IBreed>();
-    const allBreeds = AllBreeds();
-    const subBreeds = (breed: IBreed | undefined) => {
-        if (breed === undefined) return;
-        return SubBreeds(breed.name);
-    }
+    const {
+        AllBreeds,
+        setSelectedBreed,
+        SubBreeds,
+        setSubSelectedBreed
+    } = BreedGalleryHooks();
     
-    if (allBreeds.isLoading) return <Loader />
+    const all = AllBreeds();
+    const sub = SubBreeds();
     
     return(
-        <>
+        <Group>
             <SelectBreed
                 label={"Breed"}
-                breeds={allBreeds.data || []}
+                breeds={all.data || []}
                 onChange={setSelectedBreed}
+                loading={all.isLoading}
             />
-            {subBreeds(selectedBreed)?.isLoading && <Loader />}
-            {subBreeds(selectedBreed)?.isSuccess &&
+            {!!sub.data && sub.data!.length > 0 &&
                 <SelectBreed
-                    breeds={subBreeds(selectedBreed)!.data || []}
+                    label={"Sub Breed"}
+                    breeds={sub.data || []}
                     onChange={setSubSelectedBreed}
-                    label={"Sub breed"}
+                    loading={sub.isLoading}
                 />
             }
-        </>
+        </Group>
     )
 }
 
