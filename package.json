@@ -21,7 +21,8 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "jest",
+    "cy:open": "cypress open",
+    "test": "start-server-and-test start http://localhost:3000 cy:open",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -43,9 +44,10 @@
     ]
   },
   "devDependencies": {
-    "@types/jest": "^28.1.1",
-    "jest": "^28.1.0",
-    "ts-jest": "^28.0.4",
+    "@cypress/webpack-dev-server": "^1.8.4",
+    "cypress": "^10.0.3",
+    "resize-observer-polyfill": "^1.5.1",
+    "start-server-and-test": "^1.14.0",
     "typescript": "^4.7.3"
   }
 }

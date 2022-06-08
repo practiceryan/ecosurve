@@ -8,6 +8,7 @@ const SelectBreed = (
     if(loading) return <Loader />
     return (
         <Select
+            id={label.replace(" ", "-") + "-selector"}
             label={label}
             placeholder={"Select"}
             onChange={(value) => {
